@@ -1,0 +1,29 @@
+{
+    "type": "package",
+    "name": "TwoStepReviews/rest-client",
+    "description": "API REST client 2stepreviews",
+    "keywords": ["2stepreviews", "http", "rest", "HTTP client"],
+    "authors": [
+        {
+            "name": "Ricardo Almira",
+            "email": "develored3@gmail.com",
+            "homepage": "https://github.com/ricardoalmira89"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "php": "^7.0",
+        "azcro/alm": "dev-master"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^3.3"
+    },
+    "license": "MIT",
+    "autoload": {
+      "files": ["src/autoload.php"],
+      "psr-4": {
+        "TwoStepReviews\\": "src/"
+      }
+    }
+}
