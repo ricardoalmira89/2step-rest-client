@@ -9,8 +9,6 @@
 namespace TwoStepReviews;
 
 use TwoStepReviews\Resource\BaseResource;
-use TwoStepReviews\Resource\Inmueble;
-use TwoStepReviews\Resource\Log;
 use Alm\AlmArray;
 use Alm\AlmValidator;
 use TwoStepReviews\Resource\Review;
