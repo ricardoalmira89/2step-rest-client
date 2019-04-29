@@ -1,6 +1,6 @@
 {
     "type": "package",
-    "name": "TwoStepReviews/rest-client",
+    "name": "two-step-reviews/rest-client",
     "description": "API REST client 2stepreviews",
     "keywords": ["2stepreviews", "http", "rest", "HTTP client"],
     "authors": [
