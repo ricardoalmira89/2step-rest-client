@@ -11,6 +11,8 @@ namespace TwoStepReviews;
 use TwoStepReviews\Resource\BaseResource;
 use Alm\AlmArray;
 use Alm\AlmValidator;
+use TwoStepReviews\Resource\Company;
+use TwoStepReviews\Resource\DashBoard;
 use TwoStepReviews\Resource\Review;
 
 class Client
@@ -26,9 +28,10 @@ class Client
         ));
 
         $this->authManager = new AuthManager($options);
-
         $this->recursos = array(
             'review' => new Review($this->authManager),
+            'company' => new Company($this->authManager),
+            'dashboard' => new DashBoard($this->authManager),
         );
     }
 
