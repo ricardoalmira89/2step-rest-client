@@ -14,7 +14,7 @@
     "require": {
         "guzzlehttp/guzzle": "^6.3",
         "php": "^7.0",
-        "azcro/alm": "dev-master"
+        "azcro/alm": "[dev-master]"
     },
     "require-dev": {
         "symfony/var-dumper": "^3.3"
