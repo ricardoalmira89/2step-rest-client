@@ -28,7 +28,7 @@ class Client
         $this->authManager = new AuthManager($options);
 
         $this->recursos = array(
-            'review'               => new Review($this->authManager),
+            'review' => new Review($this->authManager),
         );
     }
 
