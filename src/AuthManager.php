@@ -45,6 +45,7 @@ class AuthManager
          * Si el token expiro, refrescarlo
          */
         if ($this->isTokenExpired()){
+
             try{
 
                 $res = $this->client->post($this->api."/oauth/v2/token", array(
@@ -213,6 +214,8 @@ class AuthManager
     private function loadToken(){
 
         $token = AlmArray::loadFromFile( $this->getSessionFile());
+        if (count($token) == 0)
+            return;
 
         $this->access_token = AlmArray::get($token, 'access_token');
         $this->refresh_token = AlmArray::get($token, 'refresh_token');
