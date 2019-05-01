@@ -46,6 +46,7 @@ class AuthManager
          */
         if ($this->isTokenExpired()){
             try{
+
                 $res = $this->client->post($this->api."/oauth/v2/token", array(
                     'form_params' => array(
                         'grant_type' => 'refresh_token',
@@ -99,6 +100,11 @@ class AuthManager
         return $this;
     }
 
+    public function logout(){
+        if (file_exists($this->getSessionFile()))
+            unlink($this->getSessionFile());
+    }
+
     /**
      * Establece el accessToken
      * @param $value
@@ -140,6 +146,7 @@ class AuthManager
      * @return bool
      */
     public function isTokenExpired(){
+
         return  ($this->expiresDate)
             ? (new \DateTime('now') > $this->expiresDate)
             : false;
@@ -190,11 +197,14 @@ class AuthManager
      */
     private function saveToken($token){
 
+        $token['api'] = $this->getApi();
+
         AlmValidator::validate($token, array(
             'access_token' => 'req',
             'refresh_token' => 'req',
             'expires_in' => 'req',
-            'expires_date' => 'req'
+            'expires_date' => 'req',
+            'api' => 'req'
         ));
 
         AlmArray::saveToFile($token, $this->getSessionFile());
@@ -208,6 +218,7 @@ class AuthManager
         $this->refresh_token = AlmArray::get($token, 'refresh_token');
         $this->expiresIn = AlmArray::get($token, 'expires_in');
         $this->expiresDate = new \DateTime(AlmArray::get($token, 'expires_date'));
+        $this->api = AlmArray::get($token, 'api');
     }
 
     private function expiresAt($timestamp){

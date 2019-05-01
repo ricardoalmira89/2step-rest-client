@@ -23,10 +23,6 @@ class Client
 
     public function __construct($options = [])
     {
-        AlmValidator::validate($options, array(
-            'api' => 'req'
-        ));
-
         $this->authManager = new AuthManager($options);
         $this->recursos = array(
             'review' => new Review($this->authManager),
