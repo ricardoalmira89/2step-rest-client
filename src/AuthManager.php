@@ -26,7 +26,6 @@ class AuthManager
     private $refresh_token = null;
     private $expiresIn = null;
     private $expiresDate = null;
-    private $sessionPath = "/var/session";
 
     public function __construct($data = [])
     {
@@ -36,7 +35,6 @@ class AuthManager
         $this->client_secret = AlmArray::get($data, 'client_secret');
         $this->api = AlmArray::get($data, 'api');;
         $this->client = new Client();
-
 
         $this->loadToken();
     }
@@ -182,6 +180,10 @@ class AuthManager
         return $this->api;
     }
 
+    private function getSessionFile(){
+        return sys_get_temp_dir().'session';
+    }
+
     /**
      * Almacena el token en la sesion
      * @param array $token
@@ -195,16 +197,12 @@ class AuthManager
             'expires_date' => 'req'
         ));
 
-        if (!file_exists(__DIR__.'/..'.$this->sessionPath)){
-            mkdir(__DIR__.'/../var');
-        }
-
-        AlmArray::saveToFile($token, __DIR__.'/..'.$this->sessionPath);
+        AlmArray::saveToFile($token, $this->getSessionFile());
     }
 
     private function loadToken(){
 
-        $token = AlmArray::loadFromFile( __DIR__.'/..'.$this->sessionPath);
+        $token = AlmArray::loadFromFile( $this->getSessionFile());
 
         $this->access_token = AlmArray::get($token, 'access_token');
         $this->refresh_token = AlmArray::get($token, 'refresh_token');
