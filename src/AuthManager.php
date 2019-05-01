@@ -77,24 +77,18 @@ class AuthManager
         }
 
         if (!$this->access_token){
-            try{
-                $res = $this->client->post($this->api."/oauth/v2/token", array(
-                    'form_params' => array(
-                        'grant_type' => 'password',
-                        'client_id'  => $this->client_id,
-                        'client_secret' => $this->client_secret,
-                        'username' => $this->username,
-                        'password' => $this->password
-                    )
-                ));
 
-                $this->buildToken($res);
+            $res = $this->client->post($this->api."/oauth/v2/token", array(
+                'form_params' => array(
+                    'grant_type' => 'password',
+                    'client_id'  => $this->client_id,
+                    'client_secret' => $this->client_secret,
+                    'username' => $this->username,
+                    'password' => $this->password
+                )
+            ));
 
-            } catch (\Exception $ex){
-//                echo $ex->getMessage();
-//                die();
-            }
-
+            $this->buildToken($res);
         }
 
         return $this;
