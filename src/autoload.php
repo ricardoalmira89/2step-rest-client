@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+//require_once __DIR__.'/../vendor/autoload.php';
 
 //--- Cargar los files dentro de Resources
 $files  = scandir(__DIR__.'/Resource');
