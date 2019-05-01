@@ -77,7 +77,6 @@ class AuthManager
         }
 
         if (!$this->access_token){
-
             try{
                 $res = $this->client->post($this->api."/oauth/v2/token", array(
                     'form_params' => array(
@@ -92,8 +91,8 @@ class AuthManager
                 $this->buildToken($res);
 
             } catch (\Exception $ex){
-                echo $ex->getMessage();
-                die();
+//                echo $ex->getMessage();
+//                die();
             }
 
         }
