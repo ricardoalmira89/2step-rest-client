@@ -181,7 +181,7 @@ class AuthManager
     }
 
     private function getSessionFile(){
-        return sys_get_temp_dir().'session';
+        return sys_get_temp_dir().DIRECTORY_SEPARATOR.'session-2steps';
     }
 
     /**
