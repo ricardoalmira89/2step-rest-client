@@ -16,7 +16,7 @@ abstract class BaseResource
     private $path = 'api';
     protected $client;
     protected $endpoint;
-    private $authManager;
+    protected $authManager;
 
     public function __construct($path, AuthManager $authManager)
     {
@@ -28,50 +28,73 @@ abstract class BaseResource
     protected function authorizeRequest(&$options){
         $this->authManager->auth();
         $options['headers']['Authorization'] = "Bearer ".$this->authManager->getAccessToken();
+
+        return $this->authManager->getAccessToken();
     }
 
     public function index($options = []){
 
         $endpoint = sprintf("%s?%s", $this->endpoint, http_build_query($options));
-        $this->authorizeRequest($options);
+        $token = $this->authorizeRequest($options);
 
-        $res = $this->client->get($endpoint, $options);
-        return json_decode($res->getBody()->getContents());
+        if ($token){
+            $res = $this->client->get($endpoint, $options);
+            return json_decode($res->getBody()->getContents());
+        }
+
+        return null;
     }
 
     public function show($id, $options = []){
 
         $endpoint = sprintf("%s?%s", $this->endpoint.'/'.$id, http_build_query($options));
-        $this->authorizeRequest($options);
+        $token = $this->authorizeRequest($options);
 
-        $res = $this->client->get($endpoint, $options);
-        return json_decode($res->getBody()->getContents());
+        if ($token) {
+            $res = $this->client->get($endpoint, $options);
+            return json_decode($res->getBody()->getContents());
+        }
     }
 
     public function delete($id, $options = []){
-        $this->authorizeRequest($options);
-        $res = $this->client->delete($this->endpoint.'/'.$id, $options);
-        return json_decode($res->getBody()->getContents());
+        $token = $this->authorizeRequest($options);
+
+        if ($token) {
+            $res = $this->client->delete($this->endpoint . '/' . $id, $options);
+            return json_decode($res->getBody()->getContents());
+        }
+
+        return null;
     }
 
     public function create($data = []){
         $options = [];
-        $this->authorizeRequest($options);
-        $options['headers']['Content-Type'] = "application/json";
-        $options['body'] = json_encode($data);
+        $token = $this->authorizeRequest($options);
 
-        $res = $this->client->post($this->endpoint."/", $options);
-        return json_decode($res->getBody()->getContents());
+        if ($token) {
+            $options['headers']['Content-Type'] = "application/json";
+            $options['body'] = json_encode($data);
+
+            $res = $this->client->post($this->endpoint . "/", $options);
+            return json_decode($res->getBody()->getContents());
+        }
+
+        return null;
     }
 
     public function update($id, $data = []){
         $options = [];
-        $this->authorizeRequest($options);
-        $options['headers']['Content-Type'] = "application/json";
-        $options['body'] = json_encode($data);
+        $token = $this->authorizeRequest($options);
 
-        $res = $this->client->put($this->endpoint."/".$id, $options);
-        return json_decode($res->getBody()->getContents());
+        if ($token) {
+            $options['headers']['Content-Type'] = "application/json";
+            $options['body'] = json_encode($data);
+
+            $res = $this->client->put($this->endpoint . "/" . $id, $options);
+            return json_decode($res->getBody()->getContents());
+        }
+
+        return null;
     }
 
 }

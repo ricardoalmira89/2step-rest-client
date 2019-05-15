@@ -11,6 +11,8 @@ namespace TwoStepReviews;
 use GuzzleHttp\Client;
 use Alm\AlmArray;
 use Alm\AlmValidator;
+use TwoStepReviews\Session\LocalSessionManager;
+use TwoStepReviews\Session\WpSessionManager;
 
 class AuthManager
 {
@@ -26,6 +28,7 @@ class AuthManager
     private $refresh_token = null;
     private $expiresIn = null;
     private $expiresDate = null;
+    private $sessionManager;
 
     public function __construct($data = [])
     {
@@ -36,7 +39,23 @@ class AuthManager
         $this->api = AlmArray::get($data, 'api');;
         $this->client = new Client();
 
+        $sessType = AlmArray::get($data, 'session_type', 'wordpress');
+        if ($sessType == 'wordpress'){
+            $this->sessionManager = new WpSessionManager();
+        }
+
+        if ($sessType == 'local'){
+            $this->sessionManager = new LocalSessionManager();
+        }
+
+        //--- other session managers ---
+        //(...) ---
+
         $this->loadToken();
+    }
+
+    public function isConnected(){
+        return ($this->api != null && $this->access_token != null);
     }
 
     public function auth(){
@@ -78,25 +97,26 @@ class AuthManager
 
         if (!$this->access_token){
 
-            $res = $this->client->post($this->api."/oauth/v2/token", array(
-                'form_params' => array(
-                    'grant_type' => 'password',
-                    'client_id'  => $this->client_id,
-                    'client_secret' => $this->client_secret,
-                    'username' => $this->username,
-                    'password' => $this->password
-                )
-            ));
+            try{
+                $res = $this->client->post($this->api."/oauth/v2/token", array(
+                    'form_params' => array(
+                        'grant_type' => 'password',
+                        'client_id'  => $this->client_id,
+                        'client_secret' => $this->client_secret,
+                        'username' => $this->username,
+                        'password' => $this->password
+                    )
+                ));
 
-            $this->buildToken($res);
+                $this->buildToken($res);
+
+            } catch(\Exception $ex) {
+
+            }
+
         }
 
         return $this;
-    }
-
-    public function logout(){
-        if (file_exists($this->getSessionFile()))
-            unlink($this->getSessionFile());
     }
 
     /**
@@ -181,8 +201,8 @@ class AuthManager
         return $this->api;
     }
 
-    private function getSessionFile(){
-        return sys_get_temp_dir().DIRECTORY_SEPARATOR.'session-2steps';
+    public function logout(){
+       $this->sessionManager->deleteSession();
     }
 
     /**
@@ -192,6 +212,8 @@ class AuthManager
     private function saveToken($token){
 
         $token['api'] = $this->getApi();
+        $token['client_secret'] = $this->client_secret;
+        $token['client_id'] = $this->client_id;
 
         AlmValidator::validate($token, array(
             'access_token' => 'req',
@@ -201,13 +223,17 @@ class AuthManager
             'api' => 'req'
         ));
 
-        AlmArray::saveToFile($token, $this->getSessionFile());
+       $this->sessionManager->saveSession($token);
+
     }
 
     private function loadToken(){
+        /**
+         * Carga la informacion de session, de no existir retorna
+         */
+        $token = $this->sessionManager->loadSession();
 
-        $token = AlmArray::loadFromFile( $this->getSessionFile());
-        if (count($token) == 0)
+        if (!AlmArray::get($token, 'access_token'))
             return;
 
         $this->access_token = AlmArray::get($token, 'access_token');
@@ -215,6 +241,9 @@ class AuthManager
         $this->expiresIn = AlmArray::get($token, 'expires_in');
         $this->expiresDate = new \DateTime(AlmArray::get($token, 'expires_date'));
         $this->api = AlmArray::get($token, 'api');
+        $this->client_id =  AlmArray::get($token, 'client_id');
+        $this->client_secret =  AlmArray::get($token, 'client_secret');
+
     }
 
     private function expiresAt($timestamp){
