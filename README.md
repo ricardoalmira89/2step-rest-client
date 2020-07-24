@@ -28,13 +28,16 @@ $parameters = array(
 
 $client = new Client($parameters);
 
-// Get a review list
+Get a review list
+===========================
 $response = $client->get('review')->index();
 
-// Updates the maxLocations property to a given company (company_id = 56, max_locations = 2)
+Updates the maxLocations property to a given company (company_id = 56, max_locations = 2)
+===========================
 $response = $client->get('company')->updateMaxLocations(56, 2);
 
-// Creates a enterprise user ----
+Creates a enterprise user 
+===========================
 $response = $client->get('user')->create(array(
     "email" => "enterprise@somecompany.com",
     "nombre" =>  "Mr. Enterprise",
@@ -43,7 +46,8 @@ $response = $client->get('user')->create(array(
     "role_id" => RoleType::ROLE_ENTERPRISE
 ));
 
-// Signs up a new client ----
+Signs up a new client
+===========================
 $response = $client->get('signup')->signup(array(
     "nombre" => "Mr. Enterprise",
     "email" => "enterprise@somecompany.com",
@@ -56,5 +60,6 @@ $response = $client->get('signup')->signup(array(
     "max_locations" => 2
 ));
 
-// Asociates the enterprise user_id=547 with the company_id=54
+Asociates the enterprise user_id=547 with the company_id=54
+===========================
 $res = $client->get('user')->associateAccount(547, 54);
