@@ -35,17 +35,20 @@ try{
 //    ));
 
     //--- Signup a new client ----
-    $res = $client->get('signup')->signup(array(
-        "nombre" => "Mr. Enterprise",
-        "email" => "enterprise@somecompany.com",
-        "phone" => "789896598",
-        "password" => "TZ886n6c<)-",
-        "company_name" => "H&R Films",
-        "twilio_number" => "31458794",
-        "area_code" => "347",
-        "acc_type" => 2,
-        "max_locations" => 2
-    ));
+//    $res = $client->get('signup')->signup(array(
+//        "nombre" => "Mr. Enterprise",
+//        "email" => "enterprise@somecompany.com",
+//        "phone" => "789896598",
+//        "password" => "TZ886n6c<)-",
+//        "company_name" => "H&R Films",
+//        "twilio_number" => "31458794",
+//        "area_code" => "347",
+//        "acc_type" => 2,
+//        "max_locations" => 2
+//    ));
+
+    //--- Asociates the enterprise user_id=547 with the company_id=54
+    $res = $client->get('user')->associateAccount(547, 54);
 
     dump($res);die();
 

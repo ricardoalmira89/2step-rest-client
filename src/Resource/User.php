@@ -25,4 +25,26 @@ class User extends BaseResource
 
     }
 
+    /**
+     * Associates a company with a enterprise user
+     *
+     * @param $userId
+     * @param $companyId
+     * @return mixed
+     */
+    public function associateAccount($userId, $companyId){
+        $options = [];
+        $token = $this->authorizeRequest($options);
+
+        if ($token) {
+            $options['headers']['Content-Type'] = "application/json";
+            $options['body'] = json_encode(array(
+                'company_id' => $companyId
+            ));
+
+            $res = $this->client->post(sprintf("%s/account/%s", $this->endpoint, $userId), $options);
+            return json_decode($res->getBody()->getContents());
+        }
+    }
+
 }
