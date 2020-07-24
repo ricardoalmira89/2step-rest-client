@@ -14,6 +14,7 @@ use Alm\AlmValidator;
 use TwoStepReviews\Resource\Company;
 use TwoStepReviews\Resource\DashBoard;
 use TwoStepReviews\Resource\Review;
+use TwoStepReviews\Resource\Signup;
 use TwoStepReviews\Resource\User;
 
 class Client
@@ -30,6 +31,7 @@ class Client
             'company' => new Company($this->authManager),
             'dashboard' => new DashBoard($this->authManager),
             'user' => new User($this->authManager),
+            'signup' => new Signup($this->authManager),
         );
     }
 
