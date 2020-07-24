@@ -11,6 +11,7 @@ namespace TwoStepReviews;
 use GuzzleHttp\Client;
 use Alm\AlmArray;
 use Alm\AlmValidator;
+use GuzzleHttp\Exception\BadResponseException;
 use TwoStepReviews\Session\LocalSessionManager;
 use TwoStepReviews\Session\WpSessionManager;
 
@@ -111,7 +112,8 @@ class AuthManager
                 $this->buildToken($res);
 
             } catch(\Exception $ex) {
-
+                echo $ex->getMessage();
+                die();
             }
 
         }
@@ -248,7 +250,7 @@ class AuthManager
 
     private function expiresAt($timestamp){
         $expires = new \DateTime('now');
-        $expires->modify(sprintf("+%s hours", (($timestamp / 60) / 60 )));
+        $expires->modify(sprintf("+%s hours", ( round( ($timestamp / 60) / 60 ))));
         return $expires;
     }
 
